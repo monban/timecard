@@ -17,7 +17,9 @@ func main() {
 	}
 	err := handler.SetRoutes(
 		&rest.Route{"GET", "/employees", store.GetAllEmployees},
+		&rest.Route{"GET", "/transastions", store.GetAllTransactions},
 		&rest.Route{"POST", "/employees", store.PostEmployee},
+		&rest.Route{"POST", "/transactions", store.PostTransaction},
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -32,6 +34,11 @@ type Employee struct {
 	Name string
 }
 
+type Transaction struct {
+	Id          int64 `json:"id"`
+	Employee_id int64
+}
+
 type Store struct {
 	DB gorm.DB
 }
@@ -43,6 +50,7 @@ func (store *Store) Init() {
 		log.Fatal("Error connecting to database")
 	}
 	store.DB.AutoMigrate(&Employee{})
+	store.DB.AutoMigrate(&Transaction{})
 }
 
 func (store *Store) GetAllEmployees(output rest.ResponseWriter, request *rest.Request) {
@@ -59,6 +67,25 @@ func (store *Store) PostEmployee(output rest.ResponseWriter, request *rest.Reque
 		return
 	}
 	if err := store.DB.Save(&employee).Error; err != nil {
+		rest.Error(output, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (store *Store) GetAllTransactions(output rest.ResponseWriter, request *rest.Request) {
+	transactions := []Transaction{}
+	store.DB.Find(&transactions)
+	output.WriteJson(&transactions)
+}
+
+func (store *Store) PostTransaction(output rest.ResponseWriter, request *rest.Request) {
+	transaction := Transaction{}
+	err := request.DecodeJsonPayload(&transaction)
+	if err != nil {
+		rest.Error(output, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := store.DB.Save(&transaction).Error; err != nil {
 		rest.Error(output, err.Error(), http.StatusInternalServerError)
 		return
 	}
