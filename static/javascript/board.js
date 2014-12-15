@@ -1,12 +1,31 @@
-var app = angular.module('boardApp', ['ngResource']);
+var app = angular.module('boardApp', ['ngResource','ngRoute']);
+app.config(['$routeProvider', function($routeProvider) {
+	$routeProvider
+	.when("/", {
+		templateUrl: "partial/index.html",
+		controller: "IndexController"
+	})
+	.when("/employees", {
+		templateUrl: "partial/employees.html",
+		controller: "EmployeeController"
+	})
+	.when("/locations", {
+		templateUrl: "template/locations.html",
+		controller: "LocationController"
+	})
+	.otherwise({
+		redirectTo: "/"
+	});
+}]);
 app.factory("Employee", function($resource) {
 	return $resource('/api/employees/:id');
 });
-app.controller('employeesController', function($scope, Employee) {
-	Employee.query(function(data) {
-		$scope.employees = data;
-	});
 
+app.controller('IndexController', ['$scope', 'Employee', function($scope, Employee) {
+	$scope.employees = Employee.query();
+}]);
+app.controller('EmployeeController', function($scope, Employee) {
+	$scope.employees = Employee.query();
 	$scope.addEmployee = function() {
 		var e = new Employee();
 		e.Name = $scope.newName;
@@ -29,3 +48,7 @@ app.controller('employeesController', function($scope, Employee) {
 		});
 	}
 });
+
+app.controller('LocationController', ['$scope', function($scope) {
+}]);
+

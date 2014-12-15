@@ -1,23 +1,15 @@
 <html ng-app="boardApp">
 <head>
-<script src="./javascript/angular.min.js"></script>
-<script src="./javascript/angular-resource.min.js"></script>
+<script src="./javascript/angular.js"></script>
+<script src="./javascript/angular-resource.js"></script>
+<script src="./javascript/angular-route.js"></script>
 <script src="./javascript/board.js"></script>
 </head>
 <body>
-<section ng-controller="employeesController">
-{{ employees }}
-	<ul>
-		<li ng-repeat="employee in employees">
-			{{employee.Name}}
-			<button ng-click="delete(employee)">Delete</button>
-		</li>
-	</ul>
-	<form ng-submit="addEmployee()">
-		<input type="text" ng-model="newName">
-		<input class="btn-primary" type="submit" value="add">
-	</form>
-	
-</section>
+	<nav>
+		<a href="#/">Home</a>
+		<a href="#employees">Employees</a>
+	</nav>
+	<section ng-view></section>
 </body>
 </html>

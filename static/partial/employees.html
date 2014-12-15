@@ -1,0 +1,11 @@
+<h2>Edit Employees</h2>
+<ul>
+	<li ng-repeat="employee in employees">
+		{{employee.Name}}
+		<button ng-click="delete(employee)">Delete</button>
+	</li>
+</ul>
+<form ng-submit="addEmployee()">
+	<input type="text" ng-model="newName">
+	<input class="btn-primary" type="submit" value="add">
+</form>
