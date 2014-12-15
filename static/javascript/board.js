@@ -26,20 +26,25 @@ app.factory("Employee", function($resource) {
 app.controller('IndexController', ['$scope', 'Employee', function($scope, Employee) {
 	$scope.employees = Employee.query();
 }]);
-app.controller('EmployeeController', function($scope, Employee) {
+app.controller('EmployeeController', ['$scope', 'Employee', function($scope, Employee) {
 	$scope.employees = Employee.query();
+    $scope.showNewEmployee = false;
+    $scope.showAddEmployee = function() {
+      $scope.showNewEmployee = true;  
+    };
 	$scope.addEmployee = function() {
 		var e = new Employee();
 		e.Name = $scope.newName;
 		var saved = e.$save();
 		saved.then(function() {
-			
+			$scope.showNewEmployee = false;
+            $scope.newName = "";
 		}, function() {
 			alert("new employee not saved");
 		});
 		$scope.employees.push(e);
 	};
-
+    
 	$scope.deleteEmployee = function(employee) {
 		var i = $scope.employees.indexOf(employee);
 		var removed = Employee.delete({id: employee.id});
@@ -49,6 +54,15 @@ app.controller('EmployeeController', function($scope, Employee) {
 			alert("problem");
 		});
 	}
+}]).directive('newFocus', function($timeout) {
+        return function(scope, element, attrs) {
+            scope.$watch('showNewEmployee', function(newValue) {
+                console.log('changed');
+                $timeout(function() {
+                    newValue && element[0].focus();
+                });
+            }, true);
+        };
 });
 
 app.controller('LocationController', ['$scope', function($scope) {

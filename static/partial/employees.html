@@ -5,7 +5,13 @@
 		<button ng-click="delete(employee)">Delete</button>
 	</li>
 </ul>
-<form ng-submit="addEmployee()">
-	<input type="text" ng-model="newName">
-	<input class="btn-primary" type="submit" value="add">
-</form>
+<section ng-hide="showNewEmployee">
+    <button ng-click="showAddEmployee()">Add new employee</button>
+</section>
+
+<section ng-show="showNewEmployee">
+    <form ng-submit="addEmployee()">
+        <input type="text" ng-model="newName" new-focus>
+        <input class="btn-primary" type="submit" value="add">
+    </form>
+</section>
