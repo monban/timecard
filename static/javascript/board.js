@@ -3,7 +3,7 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	$locationProvider.html5Mode(true);
 	$locationProvider.hashPrefix('!');
 	$routeProvider
-	.when("/", {
+	.when("/board", {
 		templateUrl: "/static/partial/board.html",
 		controller: "IndexController"
 	})
@@ -16,7 +16,7 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		controller: "LocationController"
 	})
 	.otherwise({
-		redirectTo: "/"
+		redirectTo: "/board"
 	});
 }]);
 app.factory("Employee", function($resource) {
