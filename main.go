@@ -25,18 +25,28 @@ func main() {
 		log.Fatal(err)
 	}
 	http.Handle("/api/", http.StripPrefix("/api", &handler))
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	http.HandleFunc("/", func(output http.ResponseWriter, request *http.Request) {
+		http.ServeFile(output, request, "./static/board.html")
+	})
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 type Employee struct {
-	Id   int64 `json:"id"`
-	Name string
+	Id          int64 `json:"id"`
+	Name        string
+	Location_id int64
 }
 
 type Transaction struct {
 	Id          int64 `json:"id"`
 	Employee_id int64
+}
+
+type Location struct {
+	Id      int64 `json:"id"`
+	Name    string
+	OnClock bool
 }
 
 type Store struct {
@@ -51,6 +61,7 @@ func (store *Store) Init() {
 	}
 	store.DB.AutoMigrate(&Employee{})
 	store.DB.AutoMigrate(&Transaction{})
+	store.DB.AutoMigrate(&Location{})
 }
 
 func (store *Store) GetAllEmployees(output rest.ResponseWriter, request *rest.Request) {

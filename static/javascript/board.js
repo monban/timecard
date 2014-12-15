@@ -1,16 +1,18 @@
 var app = angular.module('boardApp', ['ngResource','ngRoute']);
-app.config(['$routeProvider', function($routeProvider) {
+app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+	$locationProvider.html5Mode(true);
+	$locationProvider.hashPrefix('!');
 	$routeProvider
 	.when("/", {
-		templateUrl: "partial/index.html",
+		templateUrl: "/static/partial/board.html",
 		controller: "IndexController"
 	})
 	.when("/employees", {
-		templateUrl: "partial/employees.html",
+		templateUrl: "/static/partial/employees.html",
 		controller: "EmployeeController"
 	})
 	.when("/locations", {
-		templateUrl: "template/locations.html",
+		templateUrl: "/static/partial/locations.html",
 		controller: "LocationController"
 	})
 	.otherwise({
