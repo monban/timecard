@@ -17,9 +17,13 @@ func main() {
 	}
 	err := handler.SetRoutes(
 		&rest.Route{"GET", "/employees", store.GetAllEmployees},
-		&rest.Route{"GET", "/transastions", store.GetAllTransactions},
 		&rest.Route{"POST", "/employees", store.PostEmployee},
+
+		&rest.Route{"GET", "/transastions", store.GetAllTransactions},
 		&rest.Route{"POST", "/transactions", store.PostTransaction},
+
+		&rest.Route{"GET", "/locations", store.GetAllLocations},
+		&rest.Route{"POST", "/locations", store.PostLocation},
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -97,6 +101,24 @@ func (store *Store) PostTransaction(output rest.ResponseWriter, request *rest.Re
 		return
 	}
 	if err := store.DB.Save(&transaction).Error; err != nil {
+		rest.Error(output, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+func (store *Store) GetAllLocations(output rest.ResponseWriter, request *rest.Request) {
+	locations := []Location{}
+	store.DB.Find(&locations)
+	output.WriteJson(&locations)
+}
+
+func (store *Store) PostLocation(output rest.ResponseWriter, request *rest.Request) {
+	location := Location{}
+	err := request.DecodeJsonPayload(&location)
+	if err != nil {
+		rest.Error(output, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := store.DB.Save(&location).Error; err != nil {
 		rest.Error(output, err.Error(), http.StatusInternalServerError)
 		return
 	}

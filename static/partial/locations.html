@@ -1,0 +1,11 @@
+<h2>Locations</h2>
+<ul>
+	<li ng-repeat="location in locations">{{location.Name}}</li>
+</ul>
+<button ng-hide="showNewLocation" ng-click="showNewLocation=true">add location</button>
+<section ng-show="showNewLocation">
+    <form ng-submit="addLocation()">
+        <input type="text" ng-model="newLocation.name" new-focus>
+        <input class="btn-primary" type="submit" value="add">
+    </form>
+</section>

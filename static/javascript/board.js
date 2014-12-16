@@ -23,26 +23,27 @@ app.factory("Employee", function($resource) {
 	return $resource('/api/employees/:id');
 });
 
+
 app.controller('IndexController', ['$scope', 'Employee', function($scope, Employee) {
 	$scope.employees = Employee.query();
 }]);
 app.controller('EmployeeController', ['$scope', 'Employee', function($scope, Employee) {
 	$scope.employees = Employee.query();
-    $scope.showNewEmployee = false;
-    $scope.showAddEmployee = function() {
-      $scope.showNewEmployee = true;  
-    };
+	$scope.showNewEmployee = false;
+	$scope.showAddEmployee = function() {
+		$scope.showNewEmployee = true;  
+	};
 	$scope.addEmployee = function() {
 		var e = new Employee();
 		e.Name = $scope.newName;
 		var saved = e.$save();
 		saved.then(function() {
 			$scope.showNewEmployee = false;
-            $scope.newName = "";
+			$scope.newName = "";
+			$scope.employees.push(e);
 		}, function() {
 			alert("new employee not saved");
 		});
-		$scope.employees.push(e);
 	};
     
 	$scope.deleteEmployee = function(employee) {
@@ -65,6 +66,22 @@ app.controller('EmployeeController', ['$scope', 'Employee', function($scope, Emp
         };
 });
 
-app.controller('LocationController', ['$scope', function($scope) {
+app.factory("Location", function($resource) {
+	return $resource('/api/locations/:location');
+});
+
+app.controller('LocationController', ['$scope', 'Location', function($scope, Location) {
+	$scope.locations = Location.query();
+	$scope.newLocation = new Location();
+	$scope.addLocation = function() {
+		var saved = $scope.newLocation.$save();
+		saved.then(function() {
+			$scope.showNewLocation = false;
+			$scope.locations.push($scope.newLocation);
+			$scope.newLocation = new Location();
+		}, function() {
+			alert("new location not saved");
+		});
+	};
 }]);
 
