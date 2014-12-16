@@ -1,4 +1,4 @@
-var app = angular.module('boardApp', ['ngResource','ngRoute']);
+var app = angular.module('boardApp', ['ngResource','ngRoute','ui.bootstrap']);
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 	$locationProvider.html5Mode(true);
 	$locationProvider.hashPrefix('!');
@@ -24,8 +24,15 @@ app.factory("Employee", function($resource) {
 });
 
 
-app.controller('IndexController', ['$scope', 'Employee', function($scope, Employee) {
+app.controller('IndexController', ['$scope', '$modal', 'Employee', function($scope, $modal, Employee) {
 	$scope.employees = Employee.query();
+	$scope.newTransaction = function($scope) {
+		var modal = $modal.open({
+			templateUrl: '/static/partial/newTransaction.html',
+		    	controller: 'TransactionController',
+		    	size: 'lg',
+	});
+	};
 }]);
 app.controller('EmployeeController', ['$scope', 'Employee', function($scope, Employee) {
 	$scope.employees = Employee.query();
@@ -85,3 +92,6 @@ app.controller('LocationController', ['$scope', 'Location', function($scope, Loc
 	};
 }]);
 
+app.controller('TransactionController', ['$scope', function($scope) {
+	
+}]);
