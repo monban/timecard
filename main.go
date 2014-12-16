@@ -6,6 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -37,14 +38,16 @@ func main() {
 }
 
 type Employee struct {
-	Id          int64 `json:"id"`
-	Name        string
-	Location_id int64
+	Id           int64 `json:"id"`
+	Name         string
+	LocationId   int64
+	Transactions []Transaction
 }
 
 type Transaction struct {
-	Id          int64 `json:"id"`
-	Employee_id int64
+	Id         int64 `json:"id"`
+	EmployeeId int64
+	CreatedAt  time.Time
 }
 
 type Location struct {
