@@ -44,10 +44,28 @@ type Employee struct {
 	Transactions []Transaction
 }
 
+func (employee *Employee) AfterCreate(db *gorm.DB) (err error) {
+	location := Location{}
+	db.First(&location)
+	db.Model(employee).
+		Association("Transaction").
+		Append(Transaction{LocationId: location, CreatedAt: time.Now()})
+	return
+}
+
+type EmployeePresenter struct {
+	Id         int64 `json:"id"`
+	Name       string
+	Location   string
+	ReturnTime time.Time
+}
+
 type Transaction struct {
 	Id         int64 `json:"id"`
 	EmployeeId int64
 	CreatedAt  time.Time
+	LocationId Location
+	ReturnTime time.Time
 }
 
 type Location struct {
@@ -69,11 +87,31 @@ func (store *Store) Init() {
 	store.DB.AutoMigrate(&Employee{})
 	store.DB.AutoMigrate(&Transaction{})
 	store.DB.AutoMigrate(&Location{})
+	var count int
+	store.DB.Model(Location{}).Count(&count)
+	if count == 0 {
+		store.DB.Create(Location{
+			Name:    "In",
+			OnClock: true,
+		})
+	}
 }
 
 func (store *Store) GetAllEmployees(output rest.ResponseWriter, request *rest.Request) {
 	employees := []Employee{}
 	store.DB.Find(&employees)
+	presentedEmployees := make([]EmployeePresenter, len(employees))
+	for i, employee := range employees {
+		transaction := Transaction{}
+		store.DB.Where("employee_id = ?", employee.Id).Last(&transaction)
+		location := Location{}
+		store.DB.Model(&transaction).Related(&location)
+		presentedEmployees[i] = EmployeePresenter{
+			Name:       employee.Name,
+			Location:   location.Name,
+			ReturnTime: transaction.ReturnTime,
+		}
+	}
 	output.WriteJson(&employees)
 }
 
