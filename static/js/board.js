@@ -38,7 +38,7 @@ app.controller('EmployeeController', ['$scope', 'Employee', function($scope, Emp
 	$scope.employees = Employee.query();
 	$scope.showNewEmployee = false;
 	$scope.showAddEmployee = function() {
-		$scope.showNewEmployee = true;  
+		$scope.showNewEmployee = true;
 	};
 	$scope.addEmployee = function() {
 		var e = new Employee();
@@ -52,7 +52,7 @@ app.controller('EmployeeController', ['$scope', 'Employee', function($scope, Emp
 			alert("new employee not saved");
 		});
 	};
-    
+
 	$scope.deleteEmployee = function(employee) {
 		var i = $scope.employees.indexOf(employee);
 		var removed = Employee.delete({id: employee.id});
@@ -92,6 +92,6 @@ app.controller('LocationController', ['$scope', 'Location', function($scope, Loc
 	};
 }]);
 
-app.controller('TransactionController', ['$scope', function($scope) {
-	
+app.controller('TransactionController', ['$scope', 'Location', function($scope, Location) {
+	$scope.locations = Location.query();
 }]);
