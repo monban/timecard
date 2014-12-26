@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/ant0ine/go-json-rest/rest"
-	"github.com/jinzhu/gorm"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/ant0ine/go-json-rest/rest"
+	"github.com/jinzhu/gorm"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
@@ -47,10 +48,9 @@ type Employee struct {
 func (employee *Employee) AfterCreate(db *gorm.DB) (err error) {
 	location := Location{}
 	db.First(&location)
-	db.Model(employee).
-		Association("Transaction").
-		Append(Transaction{LocationId: location, CreatedAt: time.Now()})
-	return
+	transaction := Transaction{EmployeeId: employee.Id, LocationId: location.Id}
+	db.Create(&transaction)
+	return err
 }
 
 type EmployeePresenter struct {
@@ -64,7 +64,7 @@ type Transaction struct {
 	Id         int64 `json:"id"`
 	EmployeeId int64
 	CreatedAt  time.Time
-	LocationId Location
+	LocationId int64
 	ReturnTime time.Time
 }
 
@@ -112,7 +112,7 @@ func (store *Store) GetAllEmployees(output rest.ResponseWriter, request *rest.Re
 			ReturnTime: transaction.ReturnTime,
 		}
 	}
-	output.WriteJson(&employees)
+	output.WriteJson(&presentedEmployees)
 }
 
 func (store *Store) PostEmployee(output rest.ResponseWriter, request *rest.Request) {
