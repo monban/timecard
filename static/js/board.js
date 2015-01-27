@@ -94,4 +94,8 @@ app.controller('LocationController', ['$scope', 'Location', function($scope, Loc
 
 app.controller('TransactionController', ['$scope', 'Location', function($scope, Location) {
 	$scope.locations = Location.query();
+	$scope.transaction = {};
+	$scope.save_transaction = function() {
+		// TODO: Save the transaction, close the modal
+	};
 }]);

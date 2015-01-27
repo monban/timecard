@@ -1,4 +1,8 @@
 <h3>Where are you going?</h3>
-<ul>
-    <li ng-repeat="location in locations">{{location.Name}}</li>
-</ul>
+<form name="new_transaction"><ul>
+		<li ng-repeat="location in locations"><input type="radio" ng-model="transaction.destination" value="{{location.Name}}">{{location.Name}}</input></li>
+</ul></form>
+<h3>When will you return?</h3>
+<datepicker ng-model="transaction.ReturnTime"></datepicker>
+<timepicker ng-model="transaction.ReturnTime"></timepicker>
+<button class="btn btn-primary" ng-click="save_transaction()">I'm out!</button>
