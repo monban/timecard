@@ -5,6 +5,7 @@ import (
 	"github.com/monban/timecard/store"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -32,5 +33,16 @@ func main() {
 	http.HandleFunc("/", func(output http.ResponseWriter, request *http.Request) {
 		http.ServeFile(output, request, "./static/board.html")
 	})
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	listenAddr := "0.0.0.0:" + get_port()
+	log.Print("Starting server on " + listenAddr)
+	log.Fatal(http.ListenAndServe(listenAddr, nil))
+}
+
+func get_port() string {
+	if port := os.Getenv("PORT"); port != "" {
+		return port
+	} else {
+		log.Print("PORT variable not set, defaulting to 8080")
+		return "8080"
+	}
 }
